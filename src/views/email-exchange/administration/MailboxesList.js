@@ -7,6 +7,7 @@ import { faEye, faEdit, faEllipsisV, faMobileAlt } from '@fortawesome/free-solid
 import { Link } from 'react-router-dom'
 import { CippActionsOffcanvas } from 'src/components/utilities'
 import { TitleButton } from 'src/components/buttons'
+import { CellTip } from 'src/components/tables'
 
 const MailboxList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -16,7 +17,7 @@ const MailboxList = () => {
     return (
       <>
         <Link
-          to={`/identity/administration/users/view?userId=${row.UPN}&tenantDomain=${tenant.defaultDomainName}`}
+          to={`/identity/administration/users/view?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}&email=${row.UPN}`}
         >
           <CButton size="sm" variant="ghost" color="success">
             <FontAwesomeIcon icon={faEye} />
@@ -29,7 +30,9 @@ const MailboxList = () => {
             <FontAwesomeIcon icon={faEdit} />
           </CButton>
         </Link>
-        <Link to={`/email/administration/view-mobile-devices?userId=${row.primarySmtpAddress}`}>
+        <Link
+          to={`/email/administration/view-mobile-devices?customerId=${tenant.defaultDomainName}&userId=${row.primarySmtpAddress}`}
+        >
           <CButton size="sm" variant="ghost" color="warning">
             <FontAwesomeIcon icon={faMobileAlt} />
           </CButton>
@@ -109,30 +112,38 @@ const MailboxList = () => {
       name: 'User Prinicipal Name',
       sortable: true,
       exportSelector: 'UPN',
+      cell: (row) => CellTip(row['UPN']),
+      maxWidth: '300px',
     },
     {
       selector: (row) => row['displayName'],
       name: 'Display Name',
       sortable: true,
+      cell: (row) => CellTip(row['displayName']),
       exportSelector: 'displayName',
+      maxWidth: '300px',
     },
     {
       selector: (row) => row['primarySmtpAddress'],
       name: 'Primary E-mail Address',
       sortable: true,
+      cell: (row) => CellTip(row['primarySmtpAddress']),
       exportSelector: 'primarySmtpAddress',
+      maxWidth: '300px',
     },
     {
       selector: (row) => row['recipientType'],
       name: 'Recipient Type',
       sortable: true,
       exportSelector: 'recipientType',
+      maxWidth: '150px',
     },
     {
       selector: (row) => row['recipientTypeDetails'],
       name: 'Recipient Type Details',
       sortable: true,
       exportSelector: 'recipientTypeDetails',
+      maxWidth: '170px',
     },
     {
       name: 'Additional Email Addresses',
@@ -144,6 +155,7 @@ const MailboxList = () => {
     {
       name: 'Actions',
       cell: Offcanvas,
+      maxWidth: '150px',
     },
   ]
   const titleButton = (
@@ -161,6 +173,14 @@ const MailboxList = () => {
         path: '/api/ListMailboxes',
         columns,
         params: { TenantFilter: tenant?.defaultDomainName },
+        filterlist: [
+          {
+            filterName: 'User Mailboxes',
+            filter: '"recipientTypeDetails":"UserMailbox"',
+          },
+          { filterName: 'Shared Mailboxes', filter: '"recipientTypeDetails":"SharedMailbox"' },
+          { filterName: 'Has an alias', filter: '"AdditionalEmailAddresses":"' },
+        ],
       }}
     />
   )

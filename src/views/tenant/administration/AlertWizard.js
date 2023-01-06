@@ -87,10 +87,7 @@ const AlertWizard = () => {
         <Error name="selectedTenants" />
         <hr className="my-4" />
       </CippWizard.Page>
-      <CippWizard.Page
-        title="Select Standards"
-        description="Select which standards you want to apply."
-      >
+      <CippWizard.Page title="Select Alerts" description="Select which alerts you want to receive.">
         <center>
           <h3 className="text-primary">Step 2</h3>
           <h5 className="card-title mb-4">Select alerts to receive</h5>
@@ -105,6 +102,10 @@ const AlertWizard = () => {
             label="Alert on users without any form of MFA"
           />
           <RFFCFormSwitch name="MFAAdmins" label="Alert on admins without any form of MFA" />
+          <RFFCFormSwitch
+            name="NoCAConfig"
+            label="Alert on tenants without a Conditional Access policy, while having Conditional Access licensing available."
+          />
           <RFFCFormSwitch name="NewRole" label="Alert on new users added to any admin role" />
           <RFFCFormSwitch name="AdminPassword" label="Alert on changed admin Passwords" />
           <RFFCFormSwitch
@@ -118,6 +119,9 @@ const AlertWizard = () => {
           <RFFCFormSwitch name="QuotaUsed" label="Alert on 90% mailbox quota used" />
           <RFFCFormSwitch name="UnusedLicenses" label="Alert on unused licenses" />
           <RFFCFormSwitch name="AppSecretExpiry" label="Alert on expiring application secrets" />
+          <RFFCFormSwitch name="ApnCertExpiry" label="Alert on expiring APN certificates" />
+          <RFFCFormSwitch name="VppTokenExpiry" label="Alert on expiring VPP tokens" />
+          <RFFCFormSwitch name="DepTokenExpiry" label="Alert on expiring DEP tokens" />
         </CForm>
         <hr className="my-4" />
       </CippWizard.Page>
@@ -130,7 +134,6 @@ const AlertWizard = () => {
         {!postResults.isSuccess && (
           <FormSpy>
             {(props) => {
-              /* eslint-disable react/prop-types */
               return (
                 <>
                   <CRow>
@@ -207,6 +210,38 @@ const AlertWizard = () => {
                             color="#f77f00"
                             size="lg"
                             icon={props.values.AppSecretExpiry ? faCheck : faTimes}
+                          />
+                        </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Alert on expiring APN certificates
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.ApnCertExpiry ? faCheck : faTimes}
+                          />
+                        </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Alert on expiring VPP tokens
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.VppTokenExpiry ? faCheck : faTimes}
+                          />
+                        </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Alert on expiring DEP tokens
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.DepTokenExpiry ? faCheck : faTimes}
+                          />
+                        </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Alert on no CA policies
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.NoCAConfig ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                       </CListGroup>
